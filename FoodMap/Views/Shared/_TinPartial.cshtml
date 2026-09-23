@@ -1,0 +1,34 @@
+﻿
+<div class="card border-0 shadow-sm rounded-4 p-3 mb-4 bg-white">
+    <h5 class="fw-bold mb-3 d-flex align-items-center gap-2" style="color: var(--customer-primary);">
+        <i class="bi bi-fire"></i> ĐẶC SẢN NỔI BẬT
+    </h5>
+
+    <div class="d-flex flex-column gap-3">
+        @if (ViewBag.tinmoi != null)
+        {
+            @foreach (var item in (List<FoodMap.Models.Mathang>)ViewBag.tinmoi)
+            {
+                <a asp-controller="Home" asp-action="Details" asp-route-id="@item.MaMh" class="text-decoration-none">
+                    <div class="card card-hover p-2 border-0 shadow-sm">
+                        <div class="row g-2 align-items-center">
+                            <div class="col-4">
+                                <img src="~/images/@(string.IsNullOrEmpty(item.HinhAnh) ? "default.jpg" : item.HinhAnh)"
+                                     class="img-fluid rounded-3 object-fit-cover"
+                                     style="height: 65px; width: 100%;"
+                                     alt="@item.Ten"
+                                     onerror="this.onerror=null; this.src='/images/default.jpg';" />
+                            </div>
+                            <div class="col-8">
+                                <h6 class="fw-bold text-dark text-truncate mb-1" style="font-size: 0.85rem;">@item.Ten</h6>
+                                <span class="fw-bold text-danger" style="font-size: 0.8rem;">
+                                    @(item.GiaBan?.ToString("N0") ?? "0") đ
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            }
+        }
+    </div>
+</div>

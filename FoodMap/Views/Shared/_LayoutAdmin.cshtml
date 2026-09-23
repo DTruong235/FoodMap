@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Quản trị FoodMap</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <div class="d-flex">
+        <aside class="sidebar-wrapper sidebar-admin text-white p-3">
+            <div class="d-flex align-items-center gap-2 mb-4 px-2">
+                <i class="bi bi-shield-check fs-4 text-warning"></i>
+                <span class="fw-bold fs-5">ADMIN PORTAL</span>
+            </div>
+
+            <nav class="nav flex-column gap-1">
+                <a class="sidebar-link active" asp-controller="Danhmucs" asp-action="Index">
+                    <i class="bi bi-folder"></i> Quản lý Vùng miền
+                </a>
+                <a class="sidebar-link" asp-controller="Chudes" asp-action="Index">
+                    <i class="bi bi-tags"></i> Quản lý Chủ đề
+                </a>
+                <a class="sidebar-link" asp-controller="Mathangs" asp-action="Index">
+                    <i class="bi bi-box-seam"></i> Quản lý Món ăn / Tour
+                </a>
+                <a class="sidebar-link mt-auto text-danger" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-box-arrow-right"></i> Về trang mua sắm
+                </a>
+            </nav>
+        </aside>
+
+        <div class="flex-grow-1 bg-light">
+            <header class="bg-white border-bottom py-3 px-4 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-bold text-dark">@ViewData["Title"]</h5>
+                <span class="badge bg-primary rounded-pill px-3 py-2">Admin</span>
+            </header>
+
+            <main class="p-4">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,100 @@
+﻿@model IEnumerable<FoodMap.Models.Hoadon>
+
+@{
+    ViewData["Title"] = "Cổng Ban Quản Trị Admin";
+}
+
+<div class="container py-4">
+    <!-- HERO BANNER ADMIN -->
+    <div class="bg-primary text-white rounded-4 p-4 mb-4 shadow-sm d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="fw-bold mb-1"><i class="bi bi-speedometer2 me-2"></i>CỔNG BAN QUẢN TRỊ SÀN FOODMAP</h2>
+            <p class="mb-0 opacity-75">Bảng điều hành tổng quan hệ thống, quản lý gian hàng và đối soát doanh thu</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-controller="Nhacungcaps" asp-action="Index" class="btn btn-light fw-bold text-primary rounded-pill shadow-sm">
+                <i class="bi bi-building me-1"></i> Quản lý Vendor
+            </a>
+            <a asp-controller="Mathangs" asp-action="Index" class="btn btn-warning fw-bold text-dark rounded-pill shadow-sm">
+                <i class="bi bi-box-seam me-1"></i> Quản lý Mặt Hàng
+            </a>
+        </div>
+    </div>
+
+    <!-- KHỐI THỐNG KÊ TỔNG QUAN -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white border-start border-4 border-primary">
+                <span class="text-muted small">Tong doanh thu sàn</span>
+                <h3 class="fw-bold text-primary mb-0">@(((decimal)ViewBag.TongDoanhThu).ToString("N0")) đ</h3>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white border-start border-4 border-success">
+                <span class="text-muted small">Tổng đơn hàng</span>
+                <h3 class="fw-bold text-success mb-0">@ViewBag.TongDonHang</h3>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white border-start border-4 border-warning">
+                <span class="text-muted small">Nhà cung cấp / Vendor</span>
+                <h3 class="fw-bold text-warning mb-0">@ViewBag.TongVendor</h3>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white border-start border-4 border-info">
+                <span class="text-muted small">Du khách đăng ký</span>
+                <h3 class="fw-bold text-info mb-0">@ViewBag.TongKhachHang</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- BẢNG ĐƠN HÀNG MỚI NHẤT -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold text-dark m-0"><i class="bi bi-clock-history me-2 text-primary"></i>Đơn hàng vừa phát sinh</h5>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-primary">
+                    <tr>
+                        <th>Mã đơn</th>
+                        <th>Ngày đặt</th>
+                        <th>Tổng tiền</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var hd in Model)
+                        {
+                            <tr>
+                                <td class="fw-bold text-primary">#HD@(hd.MaHd)</td>
+                                <td>@hd.Ngay.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td class="fw-bold text-danger">@(hd.TongTien?.ToString("N0") ?? "0") đ</td>
+                                <td>
+                                    @if (hd.TrangThai == 1)
+                                    {
+                                        <span class="badge bg-success rounded-pill px-3">Đã quy đổi Voucher</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning text-dark rounded-pill px-3">Chờ quy đổi</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-3">Chưa có đơn hàng nào phát sinh trên hệ thống.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

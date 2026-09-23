@@ -1,0 +1,71 @@
+﻿@model FoodMap.Models.Mathang
+
+@{
+    ViewData["Title"] = Model.Ten;
+}
+
+<div class="row g-4 my-2">
+    <!-- KHỐI CHI TIẾT SẢN PHẨM (8 CỘT) -->
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+            <div class="row g-4">
+                <!-- Hình ảnh đặc sản -->
+                <div class="col-md-5">
+                    <img src="~/images/@(string.IsNullOrEmpty(Model.HinhAnh) ? "default.jpg" : Model.HinhAnh)"
+                         class="img-fluid rounded-4 object-fit-cover w-100 shadow-sm"
+                         style="max-height: 320px;"
+                         alt="@Model.Ten"
+                         onerror="this.onerror=null; this.src='/images/default.jpg';" />
+                </div>
+
+                <!-- Thông tin đặc sản -->
+                <div class="col-md-7 d-flex flex-column">
+                    <div class="mb-2">
+                        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold">
+                            @Model.Chude?.TenCd
+                        </span>
+                    </div>
+
+                    <h3 class="fw-bold text-dark mb-2">@Model.Ten</h3>
+
+                    <p class="text-muted small mb-3">
+                        <i class="bi bi-shop me-1 text-primary"></i> Cơ sở / Nhà cung cấp:
+                        <strong>@(Model.Nhacungcap?.TenCongTy ?? "Đang cập nhật")</strong>
+                    </p>
+
+                    <div class="p-3 bg-light rounded-3 mb-3">
+                        <div class="d-flex align-items-baseline gap-2">
+                            <span class="fs-3 fw-bold text-danger">@(Model.GiaBan?.ToString("N0") ?? "0") đ</span>
+                            @if (Model.GiaGoc.HasValue && Model.GiaGoc > Model.GiaBan)
+                            {
+                                <span class="text-muted text-decoration-line-through">@(Model.GiaGoc?.ToString("N0")) đ</span>
+                            }
+                        </div>
+                        <small class="text-muted"><i class="bi bi-box-seam me-1"></i> Số lượng còn: <strong>@Model.SoLuong</strong></small>
+                    </div>
+
+                    <p class="text-secondary small mb-4">
+                        <strong>Mô tả chi tiết:</strong><br />
+                        @(string.IsNullOrEmpty(Model.MoTa) ? "Đang cập nhật thông tin hương vị và nguồn gốc đặc sản." : Model.MoTa)
+                    </p>
+
+                    <!-- Nút Mua / Trở về -->
+                    <div class="mt-auto d-flex gap-2">
+                        <a asp-controller="Khachhangs" asp-action="ThemGioHang" asp-route-id="@Model.MaMh"
+                           class="btn btn-warning fw-bold text-dark px-4 py-2 rounded-pill shadow-sm">
+                            <i class="bi bi-cart-plus me-1"></i> Thêm vào giỏ hàng
+                        </a>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary px-3 py-2 rounded-pill">
+                            <i class="bi bi-arrow-left me-1"></i> Trở về
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SIDEBAR ĐẶC SẢN NỔI BẬT (4 CỘT) -->
+    <div class="col-lg-4">
+        <partial name="_TinPartial" model="null" />
+    </div>
+</div>

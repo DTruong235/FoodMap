@@ -1,0 +1,71 @@
+﻿@model IEnumerable<FoodMap.Models.Mathang>
+
+@{
+    ViewData["Title"] = "Bản Đồ Ẩm Thực & Food Tour";
+}
+
+@if (ViewBag.TuKhoa != null)
+{
+    <div class="alert alert-info rounded-3 mb-4">
+        Kết quả tìm kiếm cho từ khóa: <strong>"@ViewBag.TuKhoa"</strong>
+    </div>
+}
+
+<div class="row g-4">
+    <!-- DANH SÁCH MÓN ĂN / TOUR (8 CỘT) -->
+    <div class="col-lg-8">
+        <h4 class="fw-bold mb-3 text-uppercase border-bottom pb-2">Khám Phá Đặc Sản Vùng Miền</h4>
+        <div class="row row-cols-1 row-cols-md-2 g-3">
+            @foreach (var item in Model)
+            {
+                <div class="col">
+                    <div class="card h-100 card-hover border-0 shadow-sm rounded-3">
+                        <img src="~/images/@(string.IsNullOrEmpty(item.HinhAnh) ? "default.jpg" : item.HinhAnh)"
+                             class="card-img-top object-fit-cover rounded-top-3"
+                             style="height: 180px;"
+                             alt="@item.Ten"
+                             onerror="this.onerror=null; this.src='/images/default.jpg';" />
+
+                        <div class="card-body d-flex flex-column">
+                            <span class="badge bg-warning text-dark w-auto me-auto mb-2">@item.Chude?.TenCd</span>
+                            <h6 class="card-title fw-bold text-dark text-truncate">@item.Ten</h6>
+                            <p class="card-text text-muted small text-truncate">@item.MoTa</p>
+
+                            <!-- PHẦN GIÁ VÀ CẶP NÚT BẤM MUA / CHI TIẾT -->
+                            <div class="mt-auto d-flex justify-content-between align-items-center pt-2">
+                                <!-- Giá bán -->
+                                <span class="fw-bold text-danger fs-6">
+                                    @(item.GiaBan?.ToString("N0") ?? "0") đ
+                                </span>
+
+                                <!-- Cụm nút bấm -->
+                                <div>
+                                    <!-- Nút Xem chi tiết -->
+                                    <a asp-controller="Home"
+                                       asp-action="Details"
+                                       asp-route-id="@item.MaMh"
+                                       class="btn btn-outline-secondary btn-sm rounded-pill me-1">
+                                        Chi tiết
+                                    </a>
+
+                                    <!-- NÚT MUA HÀNG (THÊM VÀO GIỎ) -->
+                                    <a asp-controller="Khachhangs"
+                                       asp-action="ThemGioHang"
+                                       asp-route-id="@item.MaMh"
+                                       class="btn btn-warning btn-sm rounded-pill fw-bold text-dark">
+                                        <i class="bi bi-cart-plus me-1"></i> Mua
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- SIDEBAR PARTIAL VIEW (4 CỘT) -->
+    <div class="col-lg-4">
+        <partial name="_TinPartial" model="null" />
+    </div>
+</div>

@@ -1,0 +1,54 @@
+﻿@model FoodMap.Models.Cthoadon
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Cthoadon</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Hoadon)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Hoadon.MaHd)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Mathang)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Mathang.Ten)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.DonGia)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.DonGia)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.SoLuong)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.SoLuong)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ThanhTien)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ThanhTien)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.MaVoucher)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.MaVoucher)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.MaCthd">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

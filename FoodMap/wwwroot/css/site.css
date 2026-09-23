@@ -1,0 +1,96 @@
+:root {
+    --customer-primary: #FF6F00;
+    --customer-hover: #E65100;
+    --vendor-primary: #15803D;
+    --vendor-sidebar: #0F172A;
+    --admin-primary: #1E3A8A;
+    --admin-sidebar: #111827;
+    --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.05);
+    --shadow-hover: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: #F8FAFC;
+    color: #334155;
+}
+
+/* STICKY HEADER KHÁCH HÀNG */
+.sticky-header {
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 2px solid var(--customer-primary);
+}
+
+/* CART BADGE HIGHLIGHT */
+.cart-badge {
+    background-color: var(--customer-primary);
+    color: #FFF;
+    font-weight: 700;
+    font-size: 0.75rem;
+    padding: 0.25em 0.6em;
+    border-radius: 50rem;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* CARD DESIGN (_TinPartial) */
+.card-hover {
+    border: none;
+    border-radius: 12px;
+    background: #FFFFFF;
+    box-shadow: var(--shadow-soft);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+    .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-hover);
+    }
+
+/* SIDEBAR LAYOUT (ADMIN & VENDOR) */
+.sidebar-wrapper {
+    min-height: 100vh;
+    width: 260px;
+}
+
+.sidebar-admin {
+    background-color: var(--admin-sidebar);
+}
+
+.sidebar-vendor {
+    background-color: var(--vendor-sidebar);
+}
+
+.sidebar-link {
+    color: #94A3B8;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+    .sidebar-link:hover, .sidebar-link.active {
+        color: #FFFFFF;
+        background: rgba(255, 255, 255, 0.1);
+    }

@@ -1,0 +1,111 @@
+﻿@model IEnumerable<FoodMap.Models.Mathang>
+
+@{
+    ViewData["Title"] = "Cổng Quản Lý Gian Hàng (Vendor)";
+}
+
+<div class="container py-4">
+    <!-- HERO BANNER VENDOR -->
+    <div class="bg-success text-white rounded-4 p-4 mb-4 shadow-sm d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="fw-bold mb-1"><i class="bi bi-shop me-2"></i>CỔNG QUẢN LÝ GIAN HÀNG</h2>
+            <p class="mb-0 opacity-75">Quản lý danh sách mặt hàng đặc sản, dịch vụ tour và đối soát mã Voucher</p>
+        </div>
+        <div>
+            <a asp-controller="Mathangs" asp-action="Create" class="btn btn-light fw-bold text-success rounded-pill shadow-sm">
+                <i class="bi bi-plus-circle me-1"></i> Đăng Món Mới
+            </a>
+        </div>
+    </div>
+
+    <!-- KHỐI THỐNG KÊ TỔNG QUAN -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white border-start border-4 border-success">
+                <span class="text-muted small">Tổng mặt hàng đang bán</span>
+                <h3 class="fw-bold text-success mb-0">@(Model?.Count() ?? 0)</h3>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white border-start border-4 border-primary">
+                <span class="text-muted small">Trạng thái gian hàng</span>
+                <h3 class="fw-bold text-primary mb-0">Đang hoạt động</h3>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white border-start border-4 border-warning">
+                <span class="text-muted small">Sẵn sàng đối soát Voucher</span>
+                <h3 class="fw-bold text-warning mb-0">QR Code Ready</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- BẢNG DANH SÁCH MẶT HÀNG / TOUR CỦA GIAN HÀNG -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+        <div class="card-header bg-white p-3 border-bottom border-light">
+            <h5 class="fw-bold text-dark m-0"><i class="bi bi-box-seam me-2 text-success"></i>Danh sách Đặc sản & Dịch vụ</h5>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-success">
+                    <tr>
+                        <th>Hình ảnh</th>
+                        <th>Mã MH</th>
+                        <th>Tên Mặt Hàng</th>
+                        <th>Giá Bán</th>
+                        <th>Chủ Đề</th>
+                        <th class="text-center">Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.HinhAnh))
+                                    {
+                                        <img src="~/images/@item.HinhAnh" class="rounded-3 shadow-sm" style="width: 50px; height: 50px; object-fit: cover;" alt="@item.Ten" />
+                                    }
+                                    else
+                                    {
+                                        <div class="bg-light rounded-3 d-flex align-items-center justify-content-center text-muted" style="width: 50px; height: 50px;">
+                                            <i class="bi bi-image fs-4"></i>
+                                        </div>
+                                    }
+                                </td>
+                                <td class="fw-bold text-success">#MH@(item.MaMh)</td>
+                                <td class="fw-bold text-dark">@item.Ten</td>
+                                <td class="fw-bold text-danger">@(item.GiaBan?.ToString("N0") ?? "0") đ</td>
+                                <td>
+                                    <span class="badge bg-light text-dark border rounded-pill">
+                                        @(item.Chude?.TenCd ?? "Đặc sản")
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <a asp-controller="Mathangs" asp-action="Edit" asp-route-id="@item.MaMh" class="btn btn-outline-primary btn-sm rounded-pill me-1">
+                                        <i class="bi bi-pencil"></i> Sửa
+                                    </a>
+                                    <a asp-controller="Mathangs" asp-action="Details" asp-route-id="@item.MaMh" class="btn btn-outline-info btn-sm rounded-pill me-1">
+                                        <i class="bi bi-eye"></i> Xem
+                                    </a>
+                                    <a asp-controller="Mathangs" asp-action="Delete" asp-route-id="@item.MaMh" class="btn btn-outline-danger btn-sm rounded-pill">
+                                        <i class="bi bi-trash"></i> Xóa
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">Chưa có mặt hàng nào được đăng. Bấm "Đăng Món Mới" để bắt đầu!</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

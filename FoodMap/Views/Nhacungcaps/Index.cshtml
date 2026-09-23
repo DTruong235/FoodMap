@@ -1,0 +1,66 @@
+﻿@model IEnumerable<FoodMap.Models.Nhacungcap>
+
+@{
+    ViewData["Title"] = "Quản lý Nhà Cung Cấp";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold text-primary mb-1"><i class="bi bi-building me-2"></i>DANH SÁCH NHÀ CUNG CẤP / GIAN HÀNG</h3>
+            <p class="text-muted small mb-0">Quản lý các gian hàng đặc sản & đối tác tour du lịch trên hệ thống</p>
+        </div>
+        <a asp-action="Create" class="btn btn-primary rounded-pill fw-bold px-3">
+            <i class="bi bi-plus-lg me-1"></i> Thêm Nhà Cung Cấp
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-primary">
+                    <tr>
+                        <th>Mã NCC</th>
+                        <th>Tên Gian Hàng</th>
+                        <th>Số Điện Thoại</th>
+                        <th>Email</th>
+                        <th>Địa Chỉ</th>
+                        <th class="text-center">Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="fw-bold text-primary">#NCC@(item.MaNcc)</td>
+                                <td class="fw-bold text-dark">@item.TenCongTy</td>
+                                <td><i class="bi bi-telephone me-1 text-muted"></i>@item.DienThoai</td>
+                                <td><i class="bi bi-envelope me-1 text-muted"></i>@item.Email</td>
+                                <td><i class="bi bi-geo-alt me-1 text-muted"></i>@item.DiaChi</td>
+                                <td class="text-center">
+                                    <a asp-action="Edit" asp-route-id="@item.MaNcc" class="btn btn-outline-primary btn-sm rounded-pill me-1">
+                                        <i class="bi bi-pencil"></i> Sửa
+                                    </a>
+                                    <a asp-action="Details" asp-route-id="@item.MaNcc" class="btn btn-outline-info btn-sm rounded-pill me-1">
+                                        <i class="bi bi-eye"></i> Xem
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.MaNcc" class="btn btn-outline-danger btn-sm rounded-pill">
+                                        <i class="bi bi-trash"></i> Xóa
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">Chưa có nhà cung cấp nào trên hệ thống.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

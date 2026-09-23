@@ -1,0 +1,48 @@
+﻿@model FoodMap.Models.Khachhang
+
+@{
+    ViewData["Title"] = "Đăng ký tài khoản";
+}
+
+<div class="row justify-content-center my-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0 rounded-4 p-4">
+            <h3 class="fw-bold text-center mb-3" style="color: var(--customer-primary);">
+                <i class="bi bi-person-plus me-2"></i>ĐĂNG KÝ TÀI KHOẢN
+            </h3>
+            <hr />
+
+            <form asp-action="DangKy" method="post">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Họ và tên *</label>
+                    <input asp-for="Ten" class="form-control" placeholder="Nguyễn Văn A" required />
+                    <span asp-validation-for="Ten" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Địa chỉ Email *</label>
+                    <input asp-for="Email" type="email" class="form-control" placeholder="example@gmail.com" required />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Số điện thoại</label>
+                    <input asp-for="DienThoai" class="form-control" placeholder="0901234567" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Mật khẩu *</label>
+                    <input type="password" name="MatKhauNhap" class="form-control" placeholder="Nhập mật khẩu..." required />
+                </div>
+
+                <button type="submit" class="btn btn-warning fw-bold w-100 py-2 rounded-pill mt-2">
+                    TẠO TÀI KHOẢN MỚI
+                </button>
+            </form>
+
+            <div class="text-center mt-3">
+                <small class="text-muted">Đã có tài khoản? <a asp-action="DangNhap" class="fw-bold text-warning">Đăng nhập ngay</a></small>
+            </div>
+        </div>
+    </div>
+</div>

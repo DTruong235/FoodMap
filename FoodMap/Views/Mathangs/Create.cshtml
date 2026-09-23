@@ -1,0 +1,82 @@
+﻿@model FoodMap.Models.Mathang
+
+@{
+    ViewData["Title"] = "Thêm đặc sản / Tour mới";
+}
+
+<div class="card shadow-sm border-0 rounded-4 p-4 my-3">
+    <h3 class="fw-bold text-uppercase mb-3" style="color: var(--customer-primary);">
+        <i class="bi bi-plus-circle me-2"></i>Thêm Đặc Sản / Gói Tour Mới
+    </h3>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-8">
+            <!-- 1. THÊM enctype="multipart/form-data" -->
+            <form asp-action="Create" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Ten" class="control-label fw-bold">Tên món ăn / Gói tour</label>
+                    <input asp-for="Ten" class="form-control" placeholder="Nhập tên đặc sản..." />
+                    <span asp-validation-for="Ten" class="text-danger"></span>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label asp-for="GiaGoc" class="control-label fw-bold">Giá gốc (đ)</label>
+                        <input asp-for="GiaGoc" class="form-control" placeholder="Ví dụ: 200000" />
+                        <span asp-validation-for="GiaGoc" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="GiaBan" class="control-label fw-bold">Giá bán (đ)</label>
+                        <input asp-for="GiaBan" class="form-control" placeholder="Ví dụ: 180000" />
+                        <span asp-validation-for="GiaBan" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="SoLuong" class="control-label fw-bold">Số lượng khả dụng</label>
+                    <input asp-for="SoLuong" class="form-control" placeholder="Ví dụ: 50" />
+                    <span asp-validation-for="SoLuong" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="MoTa" class="control-label fw-bold">Mô tả đặc sản / Lịch trình tour</label>
+                    <textarea asp-for="MoTa" class="form-control" rows="3" placeholder="Nhập mô tả xuất xứ, hương vị..."></textarea>
+                    <span asp-validation-for="MoTa" class="text-danger"></span>
+                </div>
+
+                <!-- 2. Ô CHỌN TỆP HÌNH ẢNH CÓ name="fHinhAnh" -->
+                <div class="form-group mb-3">
+                    <label class="control-label fw-bold">Hình ảnh đặc sản</label>
+                    <input type="file" name="fHinhAnh" class="form-control" accept="image/*" />
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label asp-for="MaCd" class="control-label fw-bold">Chủ đề / Loại hình</label>
+                        <select asp-for="MaCd" class="form-select" asp-items="ViewBag.MaCd"></select>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="MaNcc" class="control-label fw-bold">Nhà cung cấp / Đối tác</label>
+                        <select asp-for="MaNcc" class="form-select" asp-items="ViewBag.MaNcc"></select>
+                    </div>
+                </div>
+
+                <div class="form-group mt-4">
+                    <button type="submit" class="btn btn-warning fw-bold px-4 rounded-pill">
+                        <i class="bi bi-save me-1"></i> Lưu đặc sản
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary rounded-pill ms-2">Hủy bỏ</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

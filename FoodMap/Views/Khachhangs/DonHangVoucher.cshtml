@@ -1,0 +1,133 @@
+﻿@model IEnumerable<FoodMap.Models.Hoadon>
+
+@{
+    ViewData["Title"] = "Voucher & Đơn hàng của tôi";
+}
+
+<div class="container py-4">
+    <!-- TIÊU ĐỀ PHÂN HỆ KHÁCH HÀNG (TÔNG CAM ÁM) -->
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-2 border-warning">
+        <div>
+            <h3 class="fw-bold text-uppercase mb-1" style="color: #e65100;">
+                <i class="bi bi-ticket-perforated me-2"></i>VOUCHER & ĐƠN HÀNG CỦA TÔI
+            </h3>
+            <p class="text-muted small mb-0">Danh sách mã QR Code quy đổi đặc sản & dịch vụ tour du lịch bản địa</p>
+        </div>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-warning text-dark rounded-pill fw-bold">
+            <i class="bi bi-arrow-left me-1"></i> Tiếp tục khám phá
+        </a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white my-4">
+            <i class="bi bi-bag-x display-1 text-muted opacity-50 mb-3"></i>
+            <h5 class="fw-bold text-secondary">Bạn chưa có đơn hàng hoặc Voucher nào!</h5>
+            <p class="text-muted small">Hãy khám phá các đặc sản vùng miền hấp dẫn và đặt mua ngay hôm nay.</p>
+            <div>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-warning fw-bold text-dark px-4 py-2 rounded-pill shadow-sm">
+                    Khám phá ngay
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var hoadon in Model)
+            {
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+                        <!-- HEADER CỦA ĐƠN HÀNG -->
+                        <div class="card-header bg-light border-0 p-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
+                            <div>
+                                <span class="fw-bold text-dark">Đơn hàng #HD@(hoadon.MaHd)</span>
+                                <span class="text-muted small ms-2"><i class="bi bi-clock me-1"></i>@hoadon.Ngay.ToString("dd/MM/yyyy HH:mm")</span>
+                            </div>
+                            <div>
+                                @if (hoadon.TrangThai == 1)
+                                {
+                                    <span class="badge bg-success rounded-pill px-3 py-2">
+                                        <i class="bi bi-check-circle me-1"></i>Đã quy đổi / Hoàn tất
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark rounded-pill px-3 py-2">
+                                        <i class="bi bi-hourglass-split me-1"></i>Chờ quy đổi dịch vụ
+                                    </span>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- CHI TIẾT CÁC SẢN PHẨM / VOUCHER TRONG ĐƠN -->
+                        <div class="card-body p-4">
+                            <div class="row g-4 align-items-center">
+                                <div class="col-lg-8">
+                                    <div class="table-responsive">
+                                        <table class="table table-borderless align-middle mb-0">
+                                            <thead>
+                                                <tr class="text-muted border-bottom small">
+                                                    <th>Đặc sản / Tour</th>
+                                                    <th class="text-center">Số lượng</th>
+                                                    <th class="text-end">Đơn giá</th>
+                                                    <th class="text-end">Thành tiền</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var ct in hoadon.Cthoadons)
+                                                {
+                                                    <tr>
+                                                        <td>
+                                                            <div class="d-flex align-items-center gap-3">
+                                                                <img src="~/images/@(string.IsNullOrEmpty(ct.Mathang?.HinhAnh) ? "default.jpg" : ct.Mathang.HinhAnh)"
+                                                                     class="rounded-3 object-fit-cover shadow-sm" width="55" height="55"
+                                                                     onerror="this.onerror=null; this.src='/images/default.jpg';" />
+                                                                <div>
+                                                                    <h6 class="fw-bold text-dark mb-0">@(ct.Mathang?.Ten ?? "Đặc sản")</h6>
+                                                                    <small class="text-danger fw-bold">Mã Voucher: @ct.MaVoucher</small>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td class="text-center fw-bold">@ct.SoLuong</td>
+                                                        <td class="text-end text-muted">@(ct.DonGia?.ToString("N0")) đ</td>
+                                                        <td class="text-end fw-bold text-danger">@(ct.ThanhTien?.ToString("N0")) đ</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <!-- KHỐI MÃ QR CODE CHO DU KHÁCH ĐƯA CHO VENDOR QUÉT -->
+                                <div class="col-lg-4 text-center border-start border-2 border-light">
+                                    @{
+                                        // Lấy mã Voucher đầu tiên trong đơn để sinh mã QR
+                                        var firstVoucher = hoadon.Cthoadons.FirstOrDefault()?.MaVoucher ?? $"VOUCHER-HD{hoadon.MaHd}";
+                                        var qrApiUrl = $"https://api.qrserver.com/v1/create-qr-code/?size=160x160&data={firstVoucher}";
+                                    }
+
+                                    <div class="p-3 bg-light rounded-4 d-inline-block shadow-sm">
+                                        <img src="@qrApiUrl" alt="Mã QR Voucher" class="img-fluid rounded-3 border bg-white p-2" style="max-width: 150px;" />
+                                        <div class="mt-2">
+                                            <span class="badge bg-dark font-monospace fs-6 px-3 py-1">@firstVoucher</span>
+                                        </div>
+                                    </div>
+                                    <p class="text-muted extra-small mt-2 mb-0">
+                                        <i class="bi bi-qr-code-scan me-1 text-warning"></i>Đưa mã QR này cho gian hàng để sử dụng
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FOOTER TỔNG TIỀN -->
+                        <div class="card-footer bg-white border-top p-3 d-flex justify-content-between align-items-center">
+                            <span class="text-muted small">Tổng thanh toán đơn hàng:</span>
+                            <span class="fs-5 fw-bold text-danger">@(hoadon.TongTien?.ToString("N0") ?? "0") đ</span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

@@ -1,0 +1,72 @@
+﻿@model IEnumerable<FoodMap.Models.Hoadon>
+
+@{
+    ViewData["Title"] = "Quản Lý Đơn Đặt Hàng Gian Hàng";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold text-success mb-1">
+                <i class="bi bi-receipt-cutoff me-2"></i>QUẢN LÝ ĐƠN ĐẶT HÀNG
+            </h3>
+            <p class="text-muted small mb-0">Theo dõi danh sách đơn hàng và trạng thái quy đổi Voucher của gian hàng</p>
+        </div>
+        <a asp-action="QuetQR" class="btn btn-success fw-bold rounded-pill px-3 shadow-sm">
+            <i class="bi bi-qr-code-scan me-1"></i> Quét QR Quy Đổi
+        </a>
+    </div>
+
+    <!-- BẢNG DANH SÁCH ĐƠN HÀNG -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-success">
+                    <tr>
+                        <th>Mã Đơn</th>
+                        <th>Khách Hàng</th>
+                        <th>Số Điện Thoại</th>
+                        <th>Ngày Đặt</th>
+                        <th>Tổng Tiền</th>
+                        <th>Trạng Thái Voucher</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var hd in Model)
+                        {
+                            <tr>
+                                <td class="fw-bold text-success">#HD@(hd.MaHd)</td>
+                                <td class="fw-bold text-dark">@(hd.Khachhang?.Ten ?? hd.Khachhang?.Email ?? "Du khách")</td>
+                                <td><i class="bi bi-telephone me-1 text-muted"></i>@(hd.Khachhang.DienThoai ?? "Chưa cập nhật")</td>
+                                <td><i class="bi bi-clock me-1 text-muted"></i>@hd.Ngay.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td class="fw-bold text-danger">@(hd.TongTien?.ToString("N0") ?? "0") đ</td>
+                                <td>
+                                    @if (hd.TrangThai == 1)
+                                    {
+                                        <span class="badge bg-success rounded-pill px-3 py-2">
+                                            <i class="bi bi-check-circle me-1"></i>Đã quy đổi Voucher
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning text-dark rounded-pill px-3 py-2">
+                                            <i class="bi bi-hourglass-split me-1"></i>Chờ quy đổi
+                                        </span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">Chưa có đơn hàng nào phát sinh cho gian hàng của bạn.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
