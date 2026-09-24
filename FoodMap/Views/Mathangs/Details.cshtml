@@ -1,66 +1,71 @@
 ﻿@model FoodMap.Models.Mathang
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Chi Tiết Mặt Hàng";
 }
 
-<h1>Details</h1>
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-9 col-lg-8">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden bg-white">
+                <div class="row g-0">
+                    <!-- HÌNH ẢNH MẶT HÀNG / TOUR -->
+                    <div class="col-md-5 bg-light d-flex align-items-center justify-content-center p-3">
+                        <img src="~/images/@(string.IsNullOrEmpty(Model.HinhAnh) ? "no-image.png" : Model.HinhAnh)"
+                             alt="@Model.Ten"
+                             class="img-fluid rounded-4 shadow-sm object-fit-cover w-100"
+                             style="max-height: 300px;" />
+                    </div>
 
-<div>
-    <h4>Mathang</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Ten)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Ten)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.GiaGoc)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.GiaGoc)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.GiaBan)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.GiaBan)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SoLuong)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SoLuong)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MoTa)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MoTa)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.HinhAnh)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.HinhAnh)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Chude)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Chude.TenCd)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nhacungcap)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nhacungcap.TenCongTy)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.MaMh">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+                    <!-- THÔNG TIN CHI TIẾT -->
+                    <div class="col-md-7 p-4 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <span class="badge bg-success-subtle text-success border border-success rounded-pill px-3 py-1">
+                                    <i class="bi bi-tag me-1"></i>@(Model.Chude?.TenCd ?? "Đặc sản")
+                                </span>
+                                <small class="text-muted">Mã MH: #MH@Model.MaMh</small>
+                            </div>
+
+                            <h4 class="fw-bold text-dark mb-3">@Model.Ten</h4>
+
+                            <!-- KHUNG GIÁ BÁN KHUYẾN MÃI -->
+                            <div class="p-3 bg-light rounded-3 mb-3 border">
+                                <div class="small text-muted mb-1 fw-semibold">Giá Voucher dịch vụ:</div>
+                                <div class="d-flex align-items-baseline gap-2">
+                                    <span class="fs-3 fw-bold text-danger">
+                                        @(Model.GiaBan?.ToString("N0") ?? "0") đ
+                                    </span>
+                                    @if (Model.GiaGoc > Model.GiaBan)
+                                    {
+                                        <span class="text-muted text-decoration-line-through">
+                                            @(Model.GiaGoc?.ToString("N0")) đ
+                                        </span>
+                                    }
+                                </div>
+                            </div>
+
+                            <!-- MÔ TẢ SẢN PHẨM / TOUR -->
+                            <div class="mb-3">
+                                <label class="fw-bold text-dark small mb-1">Mô tả chi tiết:</label>
+                                <p class="text-muted small mb-0 lh-base">
+                                    @(string.IsNullOrEmpty(Model.MoTa) ? "Chưa có thông tin mô tả cho mặt hàng này." : Model.MoTa)
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- BỘ NÚT THAO TÁC -->
+                        <div class="d-flex gap-2 border-top pt-3 mt-3">
+                            <a asp-action="Edit" asp-route-id="@Model.MaMh" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm">
+                                <i class="bi bi-pencil-square me-1"></i> Chỉnh Sửa
+                            </a>
+                            <a asp-controller="Vendors" asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4 fw-bold">
+                                <i class="bi bi-arrow-left me-1"></i> Quay Lại
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

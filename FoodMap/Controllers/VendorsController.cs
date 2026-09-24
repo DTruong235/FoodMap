@@ -1,6 +1,8 @@
 ﻿using FoodMap.Data;
+using FoodMap.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace FoodMap.Controllers
 {
@@ -135,6 +137,104 @@ namespace FoodMap.Controllers
                 .ToListAsync();
 
             return View(dsDonHang);
+        }
+
+        // POST: Vendor/CapNhatTrangThai
+        [HttpPost]
+        public async Task<IActionResult> CapNhatTrangThai(int maHd, int trangThaiMoi)
+        {
+            int? role = HttpContext.Session.GetInt32("UserRole");
+            if (role == null || role != 1) return RedirectToAction("DangNhap", "Khachhangs");
+
+            var hoadon = await _context.Hoadon.FindAsync(maHd);
+            if (hoadon != null)
+            {
+                hoadon.TrangThai = trangThaiMoi; // 0: Chờ xác nhận, 1: Đã xác nhận/Đang chuẩn bị, 2: Đã hoàn thành, 3: Đã hủy
+                await _context.SaveChangesAsync();
+                TempData["SuccessMsg"] = $"Cập nhật trạng thái đơn hàng #HD{maHd} thành công!";
+            }
+            else
+            {
+                TempData["ErrorMsg"] = "Không tìm thấy thông tin đơn hàng!";
+            }
+
+            return RedirectToAction(nameof(QuanLyDonHang));
+        }
+
+        // GET: Vendor/ThongKe
+        public async Task<IActionResult> ThongKe(string loaiThoiGian = "7ngay")
+        {
+            int? role = HttpContext.Session.GetInt32("UserRole");
+            if (role == null || role != 1) return RedirectToAction("DangNhap", "Khachhangs");
+
+            var dsHoadon = await _context.Hoadon.ToListAsync();
+            var now = DateTime.Now;
+
+            List<string> chartLabels = new List<string>();
+            List<decimal> chartData = new List<decimal>();
+            List<Hoadon> filteredOrders = new List<Hoadon>();
+
+            // XỬ LÝ THEO MỐC THỜI GIAN ĐƯỢC CHỌN
+            switch (loaiThoiGian?.ToLower())
+            {
+                case "tuan": // 4 TUẦN GẦN NHẤT
+                    filteredOrders = dsHoadon.Where(h => h.Ngay.Date >= now.Date.AddDays(-27)).ToList();
+                    for (int i = 3; i >= 0; i--)
+                    {
+                        var endOfWeek = now.Date.AddDays(-i * 7);
+                        var startOfWeek = endOfWeek.AddDays(-6);
+                        chartLabels.Add($"{startOfWeek:dd/MM} - {endOfWeek:dd/MM}");
+                        var sum = dsHoadon.Where(h => h.TrangThai == 2 && h.Ngay.Date >= startOfWeek && h.Ngay.Date <= endOfWeek)
+                                          .Sum(h => h.TongTien ?? 0);
+                        chartData.Add(sum);
+                    }
+                    break;
+
+                case "thang": // 12 THÁNG TRONG NĂM HỆN TẠI
+                    filteredOrders = dsHoadon.Where(h => h.Ngay.Year == now.Year).ToList();
+                    for (int m = 1; m <= 12; m++)
+                    {
+                        chartLabels.Add($"T{m}");
+                        var sum = dsHoadon.Where(h => h.TrangThai == 2 && h.Ngay.Year == now.Year && h.Ngay.Month == m)
+                                          .Sum(h => h.TongTien ?? 0);
+                        chartData.Add(sum);
+                    }
+                    break;
+
+                case "quy": // 4 QUÝ TRONG NĂM HỆN TẠI
+                    filteredOrders = dsHoadon.Where(h => h.Ngay.Year == now.Year).ToList();
+                    for (int q = 1; q <= 4; q++)
+                    {
+                        chartLabels.Add($"Quý {q}");
+                        int startMonth = (q - 1) * 3 + 1;
+                        int endMonth = startMonth + 2;
+                        var sum = dsHoadon.Where(h => h.TrangThai == 2 && h.Ngay.Year == now.Year && h.Ngay.Month >= startMonth && h.Ngay.Month <= endMonth)
+                                          .Sum(h => h.TongTien ?? 0);
+                        chartData.Add(sum);
+                    }
+                    break;
+
+                case "7ngay":
+                default: // 7 NGÀY GẦN NHẤT (MẶC ĐỊNH)
+                    loaiThoiGian = "7ngay";
+                    var last7Days = Enumerable.Range(0, 7).Select(i => now.Date.AddDays(-6 + i)).ToList();
+                    chartLabels = last7Days.Select(d => d.ToString("dd/MM")).ToList();
+                    filteredOrders = dsHoadon.Where(h => h.Ngay.Date >= now.Date.AddDays(-6)).ToList();
+                    chartData = last7Days.Select(d => (decimal)dsHoadon.Where(h => h.TrangThai == 2 && h.Ngay.Date == d).Sum(h => h.TongTien ?? 0)).ToList();
+                    break;
+            }
+
+            // Cập nhật các thẻ KPI theo mốc thời gian đã lọc
+            ViewBag.TongDoanhThu = filteredOrders.Where(h => h.TrangThai == 2).Sum(h => h.TongTien ?? 0);
+            ViewBag.TongDonHang = filteredOrders.Count;
+            ViewBag.DonHoanThanh = filteredOrders.Count(h => h.TrangThai == 2);
+            ViewBag.DonChoXacNhan = filteredOrders.Count(h => h.TrangThai == 0);
+            ViewBag.LoaiThoiGian = loaiThoiGian;
+
+            ViewBag.ChartLabels = System.Text.Json.JsonSerializer.Serialize(chartLabels);
+            ViewBag.ChartData = System.Text.Json.JsonSerializer.Serialize(chartData);
+
+            return View();
         }
     }
 }

@@ -52,27 +52,63 @@ namespace FoodMap.Controllers
         }
 
         // POST: Mathangs/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MaMh,Ten,GiaGoc,GiaBan,SoLuong,MoTa,MaCd,MaNcc")] Mathang mathang, IFormFile fHinhAnh)
+        public async Task<IActionResult> Create([Bind("MaMh,Ten,GiaGoc,GiaBan,MoTa,MaCd,MaNcc")] Mathang mathang, IFormFile? fHinh)
         {
+            // 1. Bỏ qua kiểm tra Validation các thuộc tính liên kết bảng
+            ModelState.Remove("MaCdNavigation");
+            ModelState.Remove("MaNccNavigation");
+            ModelState.Remove("Hinh");
+
+            // 2. LẤY MÃ NHÀ CUNG CẤP TỪ SESSION ĐĂNG NHẬP
+            int? maNccSession = HttpContext.Session.GetInt32("UserId"); // Hoặc HttpContext.Session.GetInt32("MaNcc")
+
+            // Kiểm tra xem mã NCC trong Session có thực sự tồn tại trong CSDL không
+            var nccExist = await _context.Nhacungcap.FirstOrDefaultAsync(n => n.MaNcc == maNccSession);
+
+            if (nccExist != null)
+            {
+                mathang.MaNcc = nccExist.MaNcc; // Gán đúng khóa ngoại tồn tại trong CSDL
+            }
+            else
+            {
+                // NẾU CHƯA CÓ SESSION HOẶC KHÔNG TÌM THẤY NCC: Lấy tạm mã Nhà cung cấp đầu tiên trong CSDL để tránh lỗi
+                var nccMacDinh = await _context.Nhacungcap.FirstOrDefaultAsync();
+                if (nccMacDinh != null)
+                {
+                    mathang.MaNcc = nccMacDinh.MaNcc;
+                }
+                else
+                {
+                    TempData["ErrorMsg"] = "Hệ thống chưa có Nhà cung cấp nào! Vui lòng tạo Nhà cung cấp trước.";
+                    return RedirectToAction("Index", "Vendors");
+                }
+            }
+
             if (ModelState.IsValid)
             {
-                // Gọi hàm Upload ảnh
-                string? fileName = Upload(fHinhAnh);
-                if (fileName != null)
+                // 3. Xử lý Upload ảnh
+                if (fHinh != null && fHinh.Length > 0)
                 {
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(fHinh.FileName);
+                    string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
+
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        await fHinh.CopyToAsync(stream);
+                    }
                     mathang.HinhAnh = fileName;
                 }
 
                 _context.Add(mathang);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                TempData["SuccessMsg"] = "Đăng bán mặt hàng mới thành công!";
+
+                return RedirectToAction("Index", "Vendors");
             }
-            ViewData["MaCd"] = new SelectList(_context.Chude, "MaCd", "TenCd", mathang.MaCd);
-            ViewData["MaNcc"] = new SelectList(_context.Nhacungcap, "MaNcc", "TenCongTy", mathang.MaNcc);
+
+            ViewData["MaCd"] = new SelectList(_context.Chude, "MaCd", "Ten", mathang.MaCd);
             return View(mathang);
         }
 
@@ -95,11 +131,9 @@ namespace FoodMap.Controllers
         }
 
         // POST: Mathangs/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MaMh,Ten,GiaGoc,GiaBan,SoLuong,MoTa,HinhAnh,MaCd,MaNcc")] Mathang mathang)
+        public async Task<IActionResult> Edit(int id, [Bind("MaMh,Ten,GiaGoc,GiaBan,MoTa,Hinh,MaCd,MaNcc")] Mathang mathang, IFormFile? fHinh)
         {
             if (id != mathang.MaMh)
             {
@@ -110,12 +144,32 @@ namespace FoodMap.Controllers
             {
                 try
                 {
+                    // XỬ LÝ UPLOAD HÌNH ẢNH MỚI NẾU VENDOR CHỌN FILE
+                    if (fHinh != null && fHinh.Length > 0)
+                    {
+                        // Tạo tên file duy nhất bằng Guid để tránh trùng lặp file cũ
+                        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(fHinh.FileName);
+                        string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
+
+                        // Lưu file ảnh mới vào thư mục wwwroot/images/
+                        using (var stream = new FileStream(path, FileMode.Create))
+                        {
+                            await fHinh.CopyToAsync(stream);
+                        }
+
+                        // Cập nhật tên file ảnh mới vào thuộc tính Hinh
+                        mathang.HinhAnh = fileName;
+                    }
+                    // Nếu không chọn file mới, mathang.Hinh giữ nguyên tên ảnh cũ từ hidden field
+
                     _context.Update(mathang);
                     await _context.SaveChangesAsync();
+                    TempData["SuccessMsg"] = "Cập nhật thông tin mặt hàng thành công!";
+                    return RedirectToAction("Index", "Vendors");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MathangExists(mathang.MaMh))
+                    if (!_context.Mathang.Any(e => e.MaMh == mathang.MaMh))
                     {
                         return NotFound();
                     }
@@ -124,10 +178,9 @@ namespace FoodMap.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["MaCd"] = new SelectList(_context.Chude, "MaCd", "TenCd", mathang.MaCd);
-            ViewData["MaNcc"] = new SelectList(_context.Nhacungcap, "MaNcc", "TenCongTy", mathang.MaNcc);
+
+            ViewData["MaCd"] = new SelectList(_context.Chude, "MaCd", "Ten", mathang.MaCd);
             return View(mathang);
         }
 
@@ -163,12 +216,7 @@ namespace FoodMap.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool MathangExists(int id)
-        {
-            return _context.Mathang.Any(e => e.MaMh == id);
+            return RedirectToAction("Index", "Vendors");
         }
 
         // Phương thức xử lý Upload file ảnh vào wwwroot/images

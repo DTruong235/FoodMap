@@ -1,69 +1,82 @@
 ﻿@model FoodMap.Models.Mathang
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Chỉnh Sửa Mặt Hàng";
 }
 
-<h1>Edit</h1>
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
+            <div class="card border-0 shadow-lg rounded-4 p-4 bg-white">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center me-3" style="width: 48px; height: 48px;">
+                        <i class="bi bi-pencil-square fs-4"></i>
+                    </div>
+                    <div>
+                        <h4 class="fw-bold text-primary m-0">CHỈNH SỬA MẶT HÀNG</h4>
+                        <small class="text-muted">Cập nhật thông tin mã mặt hàng #MH@Model.MaMh</small>
+                    </div>
+                </div>
 
-<h4>Mathang</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="MaMh" />
-            <div class="form-group">
-                <label asp-for="Ten" class="control-label"></label>
-                <input asp-for="Ten" class="form-control" />
-                <span asp-validation-for="Ten" class="text-danger"></span>
+                <form asp-action="Edit" enctype="multipart/form-data" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="MaMh" />
+                    <!-- Input ẩn giữ lại tên file ảnh cũ nếu Vendor không upload ảnh mới -->
+                    <input type="hidden" asp-for="HinhAnh" />
+                    <input type="hidden" asp-for="MaNcc" />
+
+                    <div class="mb-3">
+                        <label asp-for="Ten" class="form-label fw-bold text-dark">Tên Đặc Sản / Tour <span class="text-danger">*</span></label>
+                        <input asp-for="Ten" class="form-control rounded-3" required />
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="MaCd" class="form-label fw-bold text-dark">Chủ Đề</label>
+                            <select asp-for="MaCd" class="form-select rounded-3" asp-items="ViewBag.MaCd"></select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark">Thay Đổi Ảnh Mới</label>
+                            <input type="file" name="fHinh" class="form-control rounded-3" accept="image/*" />
+                        </div>
+                    </div>
+
+                    <!-- KHUNG HIỂN THỊ XEM TRƯỚC ẢNH HIỆN TẠI -->
+                    <div class="mb-3 p-3 bg-light rounded-3 d-flex align-items-center gap-3 border">
+                        <div>
+                            <span class="d-block small text-muted mb-1 fw-bold">Ảnh hiện tại:</span>
+                            <img src="~/images/@(string.IsNullOrEmpty(Model.HinhAnh) ? "no-image.png" : Model.HinhAnh)"
+                                 alt="@Model.Ten" class="rounded-3 shadow-sm object-fit-cover border" style="width: 70px; height: 70px;" />
+                        </div>
+                        <small class="text-muted">Nếu giữ nguyên ảnh cũ, bạn chỉ cần bỏ trống ô chọn file bên trên.</small>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="GiaGoc" class="form-label fw-bold text-dark">Giá Gốc (VNĐ)</label>
+                            <input asp-for="GiaGoc" type="number" class="form-control rounded-3" />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="GiaBan" class="form-label fw-bold text-dark">Giá Bán Voucher (VNĐ) <span class="text-danger">*</span></label>
+                            <input asp-for="GiaBan" type="number" class="form-control rounded-3 fw-bold text-danger" required />
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="MoTa" class="form-label fw-bold text-dark">Mô Tả Chi Tiết</label>
+                        <textarea asp-for="MoTa" class="form-control rounded-3" rows="4"></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                        <a asp-controller="Vendors" asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4 fw-bold">
+                            <i class="bi bi-arrow-left me-1"></i> Quay Lại
+                        </a>
+                        <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm">
+                            <i class="bi bi-save me-1"></i> Lưu Thay Đổi
+                        </button>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="GiaGoc" class="control-label"></label>
-                <input asp-for="GiaGoc" class="form-control" />
-                <span asp-validation-for="GiaGoc" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="GiaBan" class="control-label"></label>
-                <input asp-for="GiaBan" class="form-control" />
-                <span asp-validation-for="GiaBan" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SoLuong" class="control-label"></label>
-                <input asp-for="SoLuong" class="form-control" />
-                <span asp-validation-for="SoLuong" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MoTa" class="control-label"></label>
-                <input asp-for="MoTa" class="form-control" />
-                <span asp-validation-for="MoTa" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="HinhAnh" class="control-label"></label>
-                <input asp-for="HinhAnh" class="form-control" />
-                <span asp-validation-for="HinhAnh" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MaCd" class="control-label"></label>
-                <select asp-for="MaCd" class="form-control" asp-items="ViewBag.MaCd"></select>
-                <span asp-validation-for="MaCd" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MaNcc" class="control-label"></label>
-                <select asp-for="MaNcc" class="form-control" asp-items="ViewBag.MaNcc"></select>
-                <span asp-validation-for="MaNcc" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

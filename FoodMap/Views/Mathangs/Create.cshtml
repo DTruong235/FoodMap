@@ -1,82 +1,68 @@
 ﻿@model FoodMap.Models.Mathang
 
 @{
-    ViewData["Title"] = "Thêm đặc sản / Tour mới";
+    ViewData["Title"] = "Thêm Mặt Hàng Mới";
 }
 
-<div class="card shadow-sm border-0 rounded-4 p-4 my-3">
-    <h3 class="fw-bold text-uppercase mb-3" style="color: var(--customer-primary);">
-        <i class="bi bi-plus-circle me-2"></i>Thêm Đặc Sản / Gói Tour Mới
-    </h3>
-    <hr />
-
-    <div class="row">
-        <div class="col-md-8">
-            <!-- 1. THÊM enctype="multipart/form-data" -->
-            <form asp-action="Create" enctype="multipart/form-data">
-                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-                <div class="form-group mb-3">
-                    <label asp-for="Ten" class="control-label fw-bold">Tên món ăn / Gói tour</label>
-                    <input asp-for="Ten" class="form-control" placeholder="Nhập tên đặc sản..." />
-                    <span asp-validation-for="Ten" class="text-danger"></span>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label asp-for="GiaGoc" class="control-label fw-bold">Giá gốc (đ)</label>
-                        <input asp-for="GiaGoc" class="form-control" placeholder="Ví dụ: 200000" />
-                        <span asp-validation-for="GiaGoc" class="text-danger"></span>
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
+            <div class="card border-0 shadow-lg rounded-4 p-4 bg-white">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center me-3" style="width: 48px; height: 48px;">
+                        <i class="bi bi-plus-lg fs-4"></i>
                     </div>
-                    <div class="col-md-6">
-                        <label asp-for="GiaBan" class="control-label fw-bold">Giá bán (đ)</label>
-                        <input asp-for="GiaBan" class="form-control" placeholder="Ví dụ: 180000" />
-                        <span asp-validation-for="GiaBan" class="text-danger"></span>
+                    <div>
+                        <h4 class="fw-bold text-success m-0">THÊM MẶT HÀNG / TOUR MỚI</h4>
+                        <small class="text-muted">Nhập thông tin sản phẩm để niêm yết trên sàn FoodMap</small>
                     </div>
                 </div>
 
-                <div class="form-group mb-3">
-                    <label asp-for="SoLuong" class="control-label fw-bold">Số lượng khả dụng</label>
-                    <input asp-for="SoLuong" class="form-control" placeholder="Ví dụ: 50" />
-                    <span asp-validation-for="SoLuong" class="text-danger"></span>
-                </div>
+                <form asp-action="Create" enctype="multipart/form-data" method="post">
+                    @Html.AntiForgeryToken()
 
-                <div class="form-group mb-3">
-                    <label asp-for="MoTa" class="control-label fw-bold">Mô tả đặc sản / Lịch trình tour</label>
-                    <textarea asp-for="MoTa" class="form-control" rows="3" placeholder="Nhập mô tả xuất xứ, hương vị..."></textarea>
-                    <span asp-validation-for="MoTa" class="text-danger"></span>
-                </div>
-
-                <!-- 2. Ô CHỌN TỆP HÌNH ẢNH CÓ name="fHinhAnh" -->
-                <div class="form-group mb-3">
-                    <label class="control-label fw-bold">Hình ảnh đặc sản</label>
-                    <input type="file" name="fHinhAnh" class="form-control" accept="image/*" />
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label asp-for="MaCd" class="control-label fw-bold">Chủ đề / Loại hình</label>
-                        <select asp-for="MaCd" class="form-select" asp-items="ViewBag.MaCd"></select>
+                    <div class="mb-3">
+                        <label asp-for="Ten" class="form-label fw-bold text-dark">Tên Đặc Sản / Gói Tour <span class="text-danger">*</span></label>
+                        <input asp-for="Ten" class="form-control rounded-3" placeholder="Ví dụ: Bánh Xèo Miền Tây / Tour Chợ Nổi" required />
                     </div>
-                    <div class="col-md-6">
-                        <label asp-for="MaNcc" class="control-label fw-bold">Nhà cung cấp / Đối tác</label>
-                        <select asp-for="MaNcc" class="form-select" asp-items="ViewBag.MaNcc"></select>
-                    </div>
-                </div>
 
-                <div class="form-group mt-4">
-                    <button type="submit" class="btn btn-warning fw-bold px-4 rounded-pill">
-                        <i class="bi bi-save me-1"></i> Lưu đặc sản
-                    </button>
-                    <a asp-action="Index" class="btn btn-outline-secondary rounded-pill ms-2">Hủy bỏ</a>
-                </div>
-            </form>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="MaCd" class="form-label fw-bold text-dark">Chủ Đề / Phân Loại</label>
+                            <select asp-for="MaCd" class="form-select rounded-3" asp-items="ViewBag.MaCd"></select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark">Hình Ảnh Minh Họa</label>
+                            <input type="file" name="fHinh" class="form-control rounded-3" accept="image/*" />
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="GiaGoc" class="form-label fw-bold text-dark">Giá Gốc Niêm Yết (VNĐ)</label>
+                            <input asp-for="GiaGoc" type="number" class="form-control rounded-3" placeholder="0" />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="GiaBan" class="form-label fw-bold text-dark">Giá Bán Voucher (VNĐ) <span class="text-danger">*</span></label>
+                            <input asp-for="GiaBan" type="number" class="form-control rounded-3 fw-bold text-danger" placeholder="0" required />
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="MoTa" class="form-label fw-bold text-dark">Mô Tả Chi Tiết</label>
+                        <textarea asp-for="MoTa" class="form-control rounded-3" rows="4" placeholder="Giới thiệu nguyên liệu, hương vị đặc trưng hoặc lịch trình tour..."></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                        <a asp-controller="Vendors" asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4 fw-bold">
+                            <i class="bi bi-arrow-left me-1"></i> Quay Lại
+                        </a>
+                        <button type="submit" class="btn btn-success rounded-pill px-4 fw-bold shadow-sm">
+                            <i class="bi bi-check-lg me-1"></i> Đăng Bán
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
-
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}
