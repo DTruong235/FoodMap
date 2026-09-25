@@ -1,53 +1,75 @@
 ﻿@model FoodMap.Models.Nhacungcap
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Đăng ký Đăng bán Gian hàng (Vendor)";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Dùng Layout chung ngoài trang chủ
 }
 
-<h1>Create</h1>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0 rounded-3">
+                <div class="card-header bg-success text-white text-center py-4 rounded-top-3">
+                    <h3 class="fw-bold mb-1"><i class="bi bi-shop me-2"></i>ĐĂNG KÝ GIAN HÀNG DOANH NGHIỆP</h3>
+                    <p class="mb-0 text-white-50">Trở thành Đối tác cung cấp Ẩm thực & Tour du lịch trên sàn FoodMap</p>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-<h4>Nhacungcap</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="TenCongTy" class="control-label"></label>
-                <input asp-for="TenCongTy" class="form-control" />
-                <span asp-validation-for="TenCongTy" class="text-danger"></span>
+                        <div class="mb-3">
+                            <label asp-for="TenCongTy" class="form-label fw-bold">Tên Gian hàng / Doanh nghiệp <span class="text-danger">*</span></label>
+                            <input asp-for="TenCongTy" class="form-control" placeholder="VD: Nhà hàng Mắm Châu Đốc Cô Giáo Nắng" required />
+                            <span asp-validation-for="TenCongTy" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="Email" class="form-label fw-bold">Email đăng nhập <span class="text-danger">*</span></label>
+                                <input asp-for="Email" type="email" class="form-control" placeholder="vendor@foodmap.com" required />
+                                <span asp-validation-for="Email" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="DienThoai" class="form-label fw-bold">Số điện thoại liên hệ <span class="text-danger">*</span></label>
+                                <input asp-for="DienThoai" class="form-control" placeholder="0912345678" required />
+                                <span asp-validation-for="DienThoai" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="MatKhau" class="form-label fw-bold">Mật khẩu đăng nhập <span class="text-danger">*</span></label>
+                            <input type="password" name="MatKhauNhap" class="form-control" placeholder="••••••••" required />
+                            <span asp-validation-for="MatKhau" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="NguoiDaiDien" class="form-label fw-bold">Người đại diện / Chủ gian hàng</label>
+                                <input asp-for="NguoiDaiDien" class="form-control" placeholder="Họ và tên người đại diện" />
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="MaSoThue" class="form-label fw-bold">Mã số thuế / GPKD</label>
+                                <input asp-for="MaSoThue" class="form-control" placeholder="MST hoặc số Giấy phép kinh doanh" />
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="DiaChi" class="form-label fw-bold">Địa chỉ trụ sở / Gian hàng</label>
+                            <input asp-for="DiaChi" class="form-control" placeholder="Địa chỉ chi tiết cơ sở kinh doanh" />
+                        </div>
+
+                        <div class="alert alert-info small mb-4">
+                            <i class="bi bi-info-circle-fill me-1"></i>
+                            <strong>Lưu ý:</strong> Sau khi đăng ký, bạn có thể đăng nhập ngay vào Cổng Quản Lý Gian Hàng. Tính năng
+                            <em>Đăng bán Tour/Sản phẩm</em> sẽ được mở ngay khi <strong>Admin xác thực hồ sơ</strong>.
+                        </div>
+
+                        <button type="submit" class="btn btn-success rounded-pill w-100 fw-bold py-3 shadow-sm text-uppercase">
+                            <i class="bi bi-check-circle me-1"></i> Hoàn tất Đăng ký Gian hàng
+                        </button>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="DienThoai" class="control-label"></label>
-                <input asp-for="DienThoai" class="form-control" />
-                <span asp-validation-for="DienThoai" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DiaChi" class="control-label"></label>
-                <input asp-for="DiaChi" class="form-control" />
-                <span asp-validation-for="DiaChi" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="TrangThai" /> @Html.DisplayNameFor(model => model.TrangThai)
-                </label>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

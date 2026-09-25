@@ -27,12 +27,13 @@ namespace FoodMap.Controllers
                 return RedirectToAction("DangNhap", "Khachhangs");
             }
 
-            int userId = HttpContext.Session.GetInt32("UserId") ?? 0;
+            int userId = HttpContext.Session.GetInt32("MaNcc") ?? 0;
 
             // Lấy danh sách món ăn/tour do gian hàng này sở hữu
             var dsSanPham = await _context.Mathang
                 .Include(m => m.Chude)
                 .Include(m => m.Nhacungcap)
+                .Where(m => m.MaNcc == userId)
                 .ToListAsync();
 
             ViewBag.TongSanPham = dsSanPham.Count;
@@ -121,7 +122,7 @@ namespace FoodMap.Controllers
         {
             // 1. Kiểm tra phân quyền Vendor
             int? role = HttpContext.Session.GetInt32("UserRole");
-            int? userId = HttpContext.Session.GetInt32("UserId");
+            int? userId = HttpContext.Session.GetInt32("MaNcc");
             if (role == null || role != 1 || userId == null)
             {
                 return RedirectToAction("DangNhap", "Khachhangs");

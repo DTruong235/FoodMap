@@ -38,24 +38,30 @@
                                     @(item.GiaBan?.ToString("N0") ?? "0") đ
                                 </span>
 
-                                <!-- Cụm nút bấm -->
-                                <div>
-                                    <!-- Nút Xem chi tiết -->
-                                    <a asp-controller="Home"
-                                       asp-action="Details"
-                                       asp-route-id="@item.MaMh"
-                                       class="btn btn-outline-secondary btn-sm rounded-pill me-1">
-                                        Chi tiết
-                                    </a>
+                                @{
+                                    var userRole = Context.Session.GetInt32("UserRole");
+                                }
+                                @if (userRole != 2 && userRole != 1)
+                                {
+                                    <!-- Cụm nút bấm -->
+                                    <div>
+                                        <!-- Nút Xem chi tiết -->
+                                        <a asp-controller="Home"
+                                           asp-action="Details"
+                                           asp-route-id="@item.MaMh"
+                                           class="btn btn-outline-secondary btn-sm rounded-pill me-1">
+                                            Chi tiết
+                                        </a>
 
-                                    <!-- NÚT MUA HÀNG (THÊM VÀO GIỎ) -->
-                                    <a asp-controller="Khachhangs"
-                                       asp-action="ThemGioHang"
-                                       asp-route-id="@item.MaMh"
-                                       class="btn btn-warning btn-sm rounded-pill fw-bold text-dark">
-                                        <i class="bi bi-cart-plus me-1"></i> Mua
-                                    </a>
-                                </div>
+                                        <!-- NÚT MUA HÀNG (THÊM VÀO GIỎ) -->
+                                        <a asp-controller="Khachhangs"
+                                           asp-action="ThemGioHang"
+                                           asp-route-id="@item.MaMh"
+                                           class="btn btn-warning btn-sm rounded-pill fw-bold text-dark">
+                                            <i class="bi bi-cart-plus me-1"></i> Mua
+                                        </a>
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>

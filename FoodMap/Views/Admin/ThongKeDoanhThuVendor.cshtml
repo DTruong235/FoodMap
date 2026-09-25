@@ -1,0 +1,186 @@
+﻿@model IEnumerable<FoodMap.Controllers.AdminController.DoanhThuVendorViewModel>
+
+@{
+    ViewData["Title"] = "Thống kê Doanh thu Vendor";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+    // Chuẩn bị mảng dữ liệu JSON cho Chart.js
+    var vendorLabels = Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Select(x => x.TenNcc)));
+    var vendorValues = Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Select(x => x.TongDoanhThu)));
+}
+
+<div class="container-fluid py-3">
+    <h4 class="fw-bold text-primary mb-3">
+        <i class="bi bi-bar-chart-line me-2"></i>THỐNG KÊ DOANH THU THEO VENDOR
+    </h4>
+
+    <!-- 🟢 BỘ LỌC ĐA CHIỀU (Ngày, Tuần, Tháng, Quý, Năm) -->
+    <div class="card shadow-sm border-0 mb-4 rounded-3">
+        <div class="card-body bg-light rounded-3">
+            <form method="get" asp-action="ThongKeDoanhThuVendor" class="row g-2 align-items-end">
+
+                <!-- Chọn Loại lọc -->
+                <div class="col-md-2">
+                    <label class="form-label fw-bold small">Kiểu lọc:</label>
+                    <select name="loaiLoc" id="selectLoaiLoc" class="form-select form-select-sm" onchange="toggleFilterFields()">
+                        <option value="tatca" selected="@(ViewBag.LoaiLoc == "tatca")">Tất cả thời gian</option>
+                        <option value="ngay" selected="@(ViewBag.LoaiLoc == "ngay")">Theo Ngày</option>
+                        <option value="tuan" selected="@(ViewBag.LoaiLoc == "tuan")">Theo Tuần (7 ngày)</option>
+                        <option value="thang" selected="@(ViewBag.LoaiLoc == "thang")">Theo Tháng</option>
+                        <option value="quy" selected="@(ViewBag.LoaiLoc == "quy")">Theo Quý</option>
+                        <option value="nam" selected="@(ViewBag.LoaiLoc == "nam")">Theo Năm</option>
+                    </select>
+                </div>
+
+                <!-- Ô Chọn Ngày -->
+                <div class="col-md-2 filter-group" id="groupNgay">
+                    <label class="form-label fw-bold small">Chọn Ngày:</label>
+                    <input type="date" name="ngay" value="@ViewBag.Ngay" class="form-control form-select-sm" />
+                </div>
+
+                <!-- Ô Chọn Tháng -->
+                <div class="col-md-2 filter-group" id="groupThang">
+                    <label class="form-label fw-bold small">Chọn Tháng:</label>
+                    <select name="thang" class="form-select form-select-sm">
+                        @for (int i = 1; i <= 12; i++)
+                        {
+                            <option value="@i" selected="@(ViewBag.Thang == i)">Tháng @i</option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Ô Chọn Quý -->
+                <div class="col-md-2 filter-group" id="groupQuy">
+                    <label class="form-label fw-bold small">Chọn Quý:</label>
+                    <select name="quy" class="form-select form-select-sm">
+                        <option value="1" selected="@(ViewBag.Quy == 1)">Quý 1 (T1 - T3)</option>
+                        <option value="2" selected="@(ViewBag.Quy == 2)">Quý 2 (T4 - T6)</option>
+                        <option value="3" selected="@(ViewBag.Quy == 3)">Quý 3 (T7 - T9)</option>
+                        <option value="4" selected="@(ViewBag.Quy == 4)">Quý 4 (T10 - T12)</option>
+                    </select>
+                </div>
+
+                <!-- Ô Chọn Năm -->
+                <div class="col-md-2 filter-group" id="groupNam">
+                    <label class="form-label fw-bold small">Chọn Năm:</label>
+                    <input type="number" name="nam" value="@ViewBag.Nam" min="2020" max="2030" class="form-control form-select-sm" />
+                </div>
+
+                <!-- Nút Lọc -->
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-sm btn-primary rounded-pill w-100 fw-bold">
+                        <i class="bi bi-filter me-1"></i> Áp dụng lọc
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 📊 BIỂU ĐỒ DOANH THU CHART.JS -->
+    <div class="card shadow-sm border-0 mb-4 rounded-3">
+        <div class="card-header bg-white py-3">
+            <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-graph-up-arrow me-2 text-success"></i>Biểu đồ so sánh Doanh thu giữa các Vendor</h5>
+        </div>
+        <div class="card-body">
+            <div style="height: 350px;">
+                <canvas id="vendorRevenueChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📋 BẢNG CHI TIẾT SỐ LIỆU -->
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-body p-0">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-3">Xếp hạng</th>
+                        <th>Tên Nhà Cung Cấp (Vendor)</th>
+                        <th class="text-center">Tổng lượt bán (Sản phẩm/Tour)</th>
+                        <th class="text-end pe-3">Tổng Doanh Thu</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int rank = 1;
+                    }
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center py-4 text-muted">Không có dữ liệu doanh thu trong khoảng thời gian này.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-3 fw-bold">
+                                    @if (rank == 1)
+                                    {
+                                        <span class="badge bg-warning text-dark"><i class="bi bi-trophy-fill me-1"></i>Top 1</span>
+                                    }
+                                    else
+                                    {
+                                        <span>#@rank</span>
+                                    }
+                                </td>
+                                <td class="fw-bold text-primary">@item.TenNcc</td>
+                                <td class="text-center">@item.TongSoLuong</td>
+                                <td class="text-end pe-3 text-danger fw-bold fs-6">@item.TongDoanhThu.ToString("N0") đ</td>
+                            </tr>
+                            rank++;
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- THƯ VIỆN CHART.JS & JAVASCRIPT ĐIỀU KHIỂN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // 1. Tự động ẩn/hiện các ô chọn tùy theo Kiểu Lọc được chọn
+    function toggleFilterFields() {
+        var loai = document.getElementById("selectLoaiLoc").value;
+        document.getElementById("groupNgay").style.display = (loai === "ngay" || loai === "tuan") ? "block" : "none";
+        document.getElementById("groupThang").style.display = (loai === "thang") ? "block" : "none";
+        document.getElementById("groupQuy").style.display = (loai === "quy") ? "block" : "none";
+        document.getElementById("groupNam").style.display = (loai === "nam" || loai === "thang" || loai === "quy") ? "block" : "none";
+    }
+    // Chạy khi tải trang
+    toggleFilterFields();
+
+    // 2. Cấu hình Biểu đồ Cột (Bar Chart) bằng Chart.js
+    var ctx = document.getElementById('vendorRevenueChart').getContext('2d');
+    var vendorChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: @vendorLabels,
+            datasets: [{
+                label: 'Doanh thu (VNĐ)',
+                data: @vendorValues,
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1.5,
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) { return value.toLocaleString('vi-VN') + ' đ'; }
+                    }
+                }
+            }
+        }
+    });
+</script>

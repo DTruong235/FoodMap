@@ -1,30 +1,38 @@
 ﻿@model FoodMap.Models.Chude
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Chi tiết Chủ đề";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Details</h1>
+<div class="container py-4" style="max-width: 700px;">
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-header bg-white py-3">
+            <h5 class="fw-bold mb-0 text-primary">
+                <i class="bi bi-info-circle me-2"></i>Chi tiết Chủ đề
+            </h5>
+        </div>
+        <div class="card-body p-4">
+            <dl class="row mb-4">
+                <dt class="col-sm-4 text-muted">Mã chủ đề:</dt>
+                <dd class="col-sm-8 fw-bold">#@Model.MaCd</dd>
 
-<div>
-    <h4>Chude</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TenCd)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TenCd)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Danhmuc)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Danhmuc.Ten)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.MaCd">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+                <dt class="col-sm-4 text-muted">Tên Chủ đề:</dt>
+                <dd class="col-sm-8 fw-bold text-dark">@Model.TenCd</dd>
+
+                <dt class="col-sm-4 text-muted">Danh mục / Vùng miền:</dt>
+                <dd class="col-sm-8"><span class="badge bg-info text-dark">@(Model.Danhmuc?.Ten ?? "Chưa phân loại")</span></dd>
+
+            </dl>
+
+            <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                <a asp-action="Index" class="btn btn-outline-secondary rounded-pill btn-sm px-3">
+                    <i class="bi bi-arrow-left me-1"></i> Quay lại
+                </a>
+                <a asp-action="Edit" asp-route-id="@Model.MaCd" class="btn btn-warning text-white rounded-pill btn-sm px-4 fw-bold shadow-sm">
+                    <i class="bi bi-pencil me-1"></i> Chỉnh sửa
+                </a>
+            </div>
+        </div>
+    </div>
 </div>

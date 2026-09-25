@@ -1,54 +1,43 @@
 ﻿@model FoodMap.Models.Nhacungcap
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Chi tiết Nhà cung cấp";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Edit</h1>
+<div class="container py-4" style="max-width: 700px;">
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-header bg-white py-3">
+            <h5 class="fw-bold mb-0 text-primary">
+                <i class="bi bi-info-circle me-2"></i>Chi tiết Nhà cung cấp (Vendor)
+            </h5>
+        </div>
+        <div class="card-body p-4">
+            <dl class="row mb-4">
+                <dt class="col-sm-4 text-muted">Mã Vendor:</dt>
+                <dd class="col-sm-8 fw-bold">#@Model.MaNcc</dd>
 
-<h4>Nhacungcap</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="MaNcc" />
-            <div class="form-group">
-                <label asp-for="TenCongTy" class="control-label"></label>
-                <input asp-for="TenCongTy" class="form-control" />
-                <span asp-validation-for="TenCongTy" class="text-danger"></span>
+                <dt class="col-sm-4 text-muted">Tên Gian hàng:</dt>
+                <dd class="col-sm-8 fw-bold text-dark">@Model.TenCongTy</dd>
+
+                <dt class="col-sm-4 text-muted">Email:</dt>
+                <dd class="col-sm-8">@(Model.Email ?? "—")</dd>
+
+                <dt class="col-sm-4 text-muted">Điện thoại:</dt>
+                <dd class="col-sm-8">@(Model.DienThoai ?? "—")</dd>
+
+                <dt class="col-sm-4 text-muted">Địa chỉ:</dt>
+                <dd class="col-sm-8">@(Model.DiaChi ?? "—")</dd>
+            </dl>
+
+            <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                <a asp-action="Index" class="btn btn-outline-secondary rounded-pill btn-sm px-3">
+                    <i class="bi bi-arrow-left me-1"></i> Quay lại
+                </a>
+                <a asp-action="Edit" asp-route-id="@Model.MaNcc" class="btn btn-warning text-white rounded-pill btn-sm px-4 fw-bold shadow-sm">
+                    <i class="bi bi-pencil me-1"></i> Chỉnh sửa
+                </a>
             </div>
-            <div class="form-group">
-                <label asp-for="DienThoai" class="control-label"></label>
-                <input asp-for="DienThoai" class="form-control" />
-                <span asp-validation-for="DienThoai" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DiaChi" class="control-label"></label>
-                <input asp-for="DiaChi" class="form-control" />
-                <span asp-validation-for="DiaChi" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="TrangThai" /> @Html.DisplayNameFor(model => model.TrangThai)
-                </label>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

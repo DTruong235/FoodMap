@@ -1,0 +1,70 @@
+﻿@{
+    ViewData["Title"] = "Đăng nhập Cổng Gian hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+
+                <!-- 🟢 Header Card Tone Xanh Lá (Merchant Theme) -->
+                <div class="card-header bg-success text-white text-center py-4 border-0">
+                    <div class="mb-2">
+                        <i class="bi bi-shop-window fs-1"></i>
+                    </div>
+                    <h4 class="fw-bold mb-1">CỔNG DÀNH CHO VENDOR</h4>
+                    <p class="mb-0 text-white-50 small">Đăng nhập Quản lý Gian hàng & Tour Du lịch</p>
+                </div>
+
+                <!-- 🟢 Body Form Đăng Nhập -->
+                <div class="card-body p-4 p-md-5 bg-white">
+                    @if (ViewBag.Loi != null)
+                    {
+                        <div class="alert alert-danger py-2 small mb-3">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i> @ViewBag.Loi
+                        </div>
+                    }
+
+                    <form asp-controller="Nhacungcaps" asp-action="DangNhap" method="post">
+                        <!-- Email Gian hàng -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-dark">
+                                <i class="bi bi-envelope me-1 text-success"></i>Email Gian hàng <span class="text-danger">*</span>
+                            </label>
+                            <input type="email" name="email" class="form-control py-2" placeholder="vendor@foodmap.com" required />
+                        </div>
+
+                        <!-- Mật khẩu -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-dark">
+                                <i class="bi bi-key me-1 text-success"></i>Mật khẩu <span class="text-danger">*</span>
+                            </label>
+                            <input type="password" name="matKhau" class="form-control py-2" placeholder="••••••••" required />
+                        </div>
+
+                        <!-- Nút Đăng nhập -->
+                        <button type="submit" class="btn btn-success rounded-pill w-100 fw-bold py-2 shadow-sm text-uppercase mb-3">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập
+                        </button>
+
+                        <!-- Chuyển hướng tới Đăng ký -->
+                        <div class="text-center pt-2 border-top">
+                            <span class="small text-muted">Chưa có tài khoản Gian hàng?</span>
+                            <a asp-action="Create" class="text-success fw-bold text-decoration-none small ms-1">
+                                Đăng ký đối tác ngay
+                            </a>
+                        </div>
+                    </form>
+                </div>
+                <!-- Nút/Option chuyển sang Đăng nhập Khách hàng -->
+                <div class="card-footer bg-light text-center py-3 border-0">
+                    <span class="small text-muted">Bạn là Khách hàng muốn mua sắm / đặt tour?</span>
+                    <a asp-controller="Khachhangs" asp-action="DangNhap" class="btn btn-sm btn-outline-primary rounded-pill ms-2 fw-bold">
+                        <i class="bi bi-person me-1"></i> Đăng nhập Khách hàng
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

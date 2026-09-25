@@ -23,6 +23,7 @@
                             <th>Họ và Tên</th>
                             <th>Email</th>
                             <th>Số điện thoại</th>
+                            <th>Địa chỉ</th>
                             <th class="text-center" style="width: 160px;">Thao tác</th>
                         </tr>
                     </thead>
@@ -42,13 +43,8 @@
                                     <td class="fw-bold text-dark">@(item.Ten ?? item.Ten)</td>
                                     <td>@(item.Email ?? "—")</td>
                                     <td>@(item.DienThoai ?? "—")</td>
-                                    <td class="text-center">
-                                    <a asp-action="Details" asp-route-id="@item.MaKh" class="btn btn-sm btn-outline-info rounded-circle me-1" title="Chi tiết">
-                                        <i class="bi bi-eye"></i>
-                                    </a>
-                                    <a asp-action="Delete" asp-route-id="@item.MaKh" class="btn btn-sm btn-outline-danger rounded-circle" title="Xóa">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
+                             
+                 
                                 </tr>
                             }
                         }

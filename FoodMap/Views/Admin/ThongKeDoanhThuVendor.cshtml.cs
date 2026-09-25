@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace FoodMap.Views.Nhacungcaps
+namespace FoodMap.Views.Admin
 {
-    public class QuetQRModel : PageModel
+    public class ThongKeDoanhThuVendorModel : PageModel
     {
         public void OnGet()
         {

@@ -1,85 +1,70 @@
 ﻿@using Microsoft.AspNetCore.Http
 
-<ul class="navbar-nav align-items-center gap-2">
-    @if (Context.Session.GetString("TenNguoiDung") != null)
+@{
+    var userName = Context.Session.GetString("UserName");
+    var vendorId = Context.Session.GetInt32("VendorId");
+    var userId = Context.Session.GetInt32("UserId");
+}
+
+<ul class="navbar-nav align-items-center ms-auto">
+    @if (!string.IsNullOrEmpty(userName))
     {
-        int role = Context.Session.GetInt32("UserRole") ?? 0;
-
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle text-dark fw-bold d-flex align-items-center gap-1" href="#" role="button" data-bs-toggle="dropdown">
-                <i class="bi bi-person-circle fs-5 text-warning"></i>
-                <span>Xin chào, @Context.Session.GetString("TenNguoiDung")</span>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3">
-                @if (role == 2) // MENU ADMIN
-                {
+        if (vendorId != null)
+        {
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle fw-bold d-flex align-items-center text-success" href="#" id="vendorDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-shop fs-5 me-1"></i>
+                    <span>@userName</span>
+                    <span class="badge bg-success ms-2">Vendor</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end border-0 shadow mt-2" aria-labelledby="vendorDropdown">
                     <li>
-                        <a class="dropdown-item text-primary fw-bold" asp-controller="Admin" asp-action="Index">
-                            <i class="bi bi-speedometer2 me-2"></i>Trang quản trị
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item text-primary fw-bold" asp-controller="Nhacungcaps" asp-action="Index">
-                            <i class="bi bi-building me-2"></i>Quản lý Nhà Cung Cấp
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item text-primary fw-bold" asp-controller="Mathangs" asp-action="Index">
-                            <i class="bi bi-gear me-2"></i>Quản lý Mặt Hàng
+                        <a class="dropdown-item fw-bold text-success" asp-controller="Vendors" asp-action="Index">
+                            <i class="bi bi-speedometer2 me-2"></i>Cổng Quản lý Gian hàng
                         </a>
                     </li>
                     <li><hr class="dropdown-divider"></li>
-                }
-
-                @if (role == 1) // MENU VENDOR
-                {
                     <li>
-                        <a class="dropdown-item text-success fw-bold" asp-controller="Vendors" asp-action="Index">
-                            <i class="bi bi-shop me-2"></i>Cổng Nhà Cung Cấp
+                        <a class="dropdown-item text-danger fw-bold" asp-controller="Nhacungcaps" asp-action="DangXuat">
+                            <i class="bi bi-box-arrow-right me-2"></i>Đăng xuất Gian hàng
                         </a>
                     </li>
+                </ul>
+            </li>
+        }
+        else if (userId != null)
+        {
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle fw-bold d-flex align-items-center text-dark" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-person-circle text-primary fs-5 me-1"></i>
+                    <span>@userName</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end border-0 shadow mt-2" aria-labelledby="userDropdown">
                     <li>
-                        <a class="dropdown-item text-success fw-bold" asp-controller="Vendors" asp-action="QuanLyDonHang">
-                            <i class="bi bi-gear me-2"></i>Quản Lý Đơn Hàng
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item text-success fw-bold" asp-controller="Vendors" asp-action="QuetQR">
-                            <i class="bi bi-qr-code-scan me-2"></i>Quét QR Voucher
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item text-success fw-bold" asp-controller="Vendors" asp-action="ThongKe">
-                            <i class="bi bi-bar-chart-line me-2"></i>Thống kê doanh thu
+                        <a class="dropdown-item" asp-controller="Khachhangs" asp-action="Details" asp-route-id="@userId">
+                            <i class="bi bi-person me-2"></i>Thông tin tài khoản
                         </a>
                     </li>
                     <li><hr class="dropdown-divider"></li>
-                }
-
-                <li>
-                    <a class="dropdown-item text-warning fw-bold" asp-controller="Khachhangs" asp-action="DonHangVoucher">
-                        <i class="bi bi-ticket-perforated me-2"></i>Voucher & Đơn hàng của tôi
-                    </a>
-                </li>
-
-                <li>
-                    <a class="dropdown-item text-danger fw-bold" asp-controller="Khachhangs" asp-action="DangXuat">
-                        <i class="bi bi-box-arrow-right me-2"></i>Đăng xuất
-                    </a>
-                </li>
-            </ul>
-        </li>
+                    <li>
+                        <a class="dropdown-item text-danger fw-bold" asp-controller="Khachhangs" asp-action="DangXuat">
+                            <i class="bi bi-box-arrow-right me-2"></i>Đăng xuất
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        }
     }
     else
     {
-        <li class="nav-item">
-            <a class="btn btn-outline-dark btn-sm rounded-pill px-3 fw-bold" asp-controller="Khachhangs" asp-action="DangNhap">
-                Đăng nhập
+        <li class="nav-item me-2">
+            <a class="btn btn-outline-primary rounded-pill btn-sm px-3 fw-bold" asp-controller="Khachhangs" asp-action="DangNhap">
+                <i class="bi bi-person me-1"></i> Đăng nhập Khách
             </a>
         </li>
         <li class="nav-item">
-            <a class="btn btn-warning btn-sm rounded-pill px-3 fw-bold text-dark" asp-controller="Khachhangs" asp-action="DangKy">
-                Đăng ký
+            <a class="btn btn-outline-success rounded-pill btn-sm px-3 fw-bold" asp-controller="Nhacungcaps" asp-action="DangNhap">
+                <i class="bi bi-shop me-1"></i> Đăng nhập Vendor
             </a>
         </li>
     }

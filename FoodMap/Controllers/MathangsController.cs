@@ -56,13 +56,10 @@ namespace FoodMap.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("MaMh,Ten,GiaGoc,GiaBan,MoTa,MaCd,MaNcc")] Mathang mathang, IFormFile? fHinh)
         {
-            // 1. Bỏ qua kiểm tra Validation các thuộc tính liên kết bảng
-            ModelState.Remove("MaCdNavigation");
-            ModelState.Remove("MaNccNavigation");
-            ModelState.Remove("Hinh");
 
-            // 2. LẤY MÃ NHÀ CUNG CẤP TỪ SESSION ĐĂNG NHẬP
-            int? maNccSession = HttpContext.Session.GetInt32("UserId"); // Hoặc HttpContext.Session.GetInt32("MaNcc")
+
+            // LẤY MÃ NHÀ CUNG CẤP TỪ SESSION ĐĂNG NHẬP
+            int? maNccSession = HttpContext.Session.GetInt32("MaNcc"); // Hoặc HttpContext.Session.GetInt32("MaNcc")
 
             // Kiểm tra xem mã NCC trong Session có thực sự tồn tại trong CSDL không
             var nccExist = await _context.Nhacungcap.FirstOrDefaultAsync(n => n.MaNcc == maNccSession);

@@ -37,8 +37,15 @@
             </form>
 
             <div class="text-center mt-3">
-                <small class="text-muted">Chưa có tài khoản? <a asp-action="DangKy" class="fw-bold text-warning">Đăng ký ngay</a></small>
+                <small class="text-muted">Chưa có tài khoản? <a asp-action="Create" class="fw-bold text-warning">Đăng ký ngay</a></small>
             </div>
+        </div>
+        <!-- Nút/Option chuyển sang Đăng nhập Gian hàng -->
+        <div class="card-footer bg-light text-center py-3 border-0">
+            <span class="small text-muted">Bạn là Cơ sở kinh doanh / Đối tác?</span>
+            <a asp-controller="Nhacungcaps" asp-action="DangNhap" class="btn btn-sm btn-outline-success rounded-pill ms-2 fw-bold">
+                <i class="bi bi-shop me-1"></i> Đăng nhập Cổng Vendor
+            </a>
         </div>
     </div>
 </div>

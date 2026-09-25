@@ -1,34 +1,37 @@
 ﻿@model FoodMap.Models.Danhmuc
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Chỉnh sửa Vùng miền";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Edit</h1>
+<div class="container py-4" style="max-width: 700px;">
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-header bg-white py-3">
+            <h5 class="fw-bold mb-0 text-primary">
+                <i class="bi bi-pencil-square me-2"></i>Chỉnh sửa Vùng miền
+            </h5>
+        </div>
+        <div class="card-body p-4">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <input type="hidden" asp-for="MaDm" />
 
-<h4>Danhmuc</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="MaDm" />
-            <div class="form-group">
-                <label asp-for="Ten" class="control-label"></label>
-                <input asp-for="Ten" class="form-control" />
-                <span asp-validation-for="Ten" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+                <div class="mb-3">
+                    <label asp-for="Ten" class="form-label fw-bold">Tên Vùng miền <span class="text-danger">*</span></label>
+                    <input asp-for="Ten" class="form-control" />
+                    <span asp-validation-for="Ten" class="text-danger small"></span>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                    <a asp-action="Index" class="btn btn-outline-secondary rounded-pill btn-sm px-3">
+                        <i class="bi bi-arrow-left me-1"></i> Quay lại
+                    </a>
+                    <button type="submit" class="btn btn-primary rounded-pill btn-sm px-4 fw-bold shadow-sm">
+                        <i class="bi bi-save me-1"></i> Cập nhật
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

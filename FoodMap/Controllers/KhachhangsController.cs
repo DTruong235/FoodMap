@@ -18,10 +18,15 @@ namespace FoodMap.Controllers
             _passwordHasher = passwordHasher;
         }
 
-        // GET: Khachhangs
+        // GET: Khachhangs/Index
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Khachhang.ToListAsync());
+            var dsKhachHang = await _context.Khachhang
+                .Where(k => k.VaiTro == 0) // Chỉ lấy danh sách Khách hàng
+                .OrderByDescending(k => k.MaKh)
+                .ToListAsync();
+
+            return View(dsKhachHang);
         }
 
         // GET: Khachhangs/Details/5
@@ -44,16 +49,29 @@ namespace FoodMap.Controllers
         // POST: Khachhangs/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MaKh,Ten,DienThoai,Email,MatKhau")] Khachhang khachhang)
+        public async Task<IActionResult> Create(Khachhang khachhang, string MatKhauNhap)
         {
             if (ModelState.IsValid)
             {
+                var checkEmail = await _context.Khachhang.FirstOrDefaultAsync(k => k.Email == khachhang.Email);
+                if (checkEmail != null)
+                {
+                    ModelState.AddModelError("Email", "Email này đã được đăng ký!");
+                    return View(khachhang);
+                }
+
+                khachhang.MatKhau = _passwordHasher.HashPassword(khachhang, MatKhauNhap);
+                khachhang.VaiTro = 0; // 0 = Khách hàng
+
                 _context.Add(khachhang);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
+                TempData["SuccessMsg"] = "Đăng ký tài khoản thành công! Vui lòng đăng nhập.";
+                return RedirectToAction(nameof(DangNhap));
             }
             return View(khachhang);
         }
+
 
         // GET: Khachhangs/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -150,6 +168,14 @@ namespace FoodMap.Controllers
         // 1. Thêm đặc sản / voucher vào giỏ hàng
         public async Task<IActionResult> ThemGioHang(int id)
         {
+            string? role = HttpContext.Session.GetString("Role");
+
+            if (role == "Vendor" || role == "Admin")
+            {
+                TempData["ErrorMsg"] = "Tài khoản Quản trị / Nhà cung cấp không được phép thực hiện mua hàng!";
+                return RedirectToAction("Index", "Home");
+            }
+
             var mathang = await _context.Mathang.FirstOrDefaultAsync(m => m.MaMh == id);
             if (mathang == null) return NotFound("Sản phẩm không tồn tại");
 
@@ -299,35 +325,6 @@ namespace FoodMap.Controllers
         // TÀI KHOẢN (ĐĂNG KÝ, ĐĂNG NHẬP, ĐĂNG XUẤT)
         // =========================================================================
 
-        public IActionResult DangKy()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DangKy(Khachhang khachhang, string MatKhauNhap)
-        {
-            if (ModelState.IsValid)
-            {
-                var checkEmail = await _context.Khachhang.FirstOrDefaultAsync(k => k.Email == khachhang.Email);
-                if (checkEmail != null)
-                {
-                    ModelState.AddModelError("Email", "Email này đã được đăng ký!");
-                    return View(khachhang);
-                }
-
-                khachhang.MatKhau = _passwordHasher.HashPassword(khachhang, MatKhauNhap);
-                khachhang.VaiTro = 0; // 0 = Khách hàng
-
-                _context.Add(khachhang);
-                await _context.SaveChangesAsync();
-
-                TempData["SuccessMsg"] = "Đăng ký tài khoản thành công! Vui lòng đăng nhập.";
-                return RedirectToAction(nameof(DangNhap));
-            }
-            return View(khachhang);
-        }
 
         public IActionResult DangNhap()
         {

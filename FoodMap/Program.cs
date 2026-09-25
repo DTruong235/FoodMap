@@ -16,6 +16,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 // 2.1. ??ng ký D?ch v? Mã hóa M?t kh?u cho Khachhang (dùng Scoped)
 builder.Services.AddScoped<IPasswordHasher<Khachhang>, PasswordHasher<Khachhang>>();
+builder.Services.AddScoped<IPasswordHasher<Nhacungcap>, PasswordHasher<Nhacungcap>>();
 
 // 2.2. ??ng ký Caching & Session qu?n lý Gi? hàng + Phiên ??ng nh?p
 builder.Services.AddDistributedMemoryCache();

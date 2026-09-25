@@ -22,7 +22,13 @@ namespace FoodMap.Models
         [StringLength(255)]
         public string? DiaChi { get; set; }
 
-        public bool TrangThai { get; set; } = true;
+        public string? MatKhau { get; set; }           // Mật khẩu đăng nhập gian hàng
+        public string? NguoiDaiDien { get; set; }       // Chủ gian hàng / Người đại diện
+        public string? MaSoThue { get; set; }          // Mã số thuế / Số GPKD
+        public int TrangThaiXacThuc { get; set; } = 0; // 0: Chờ Admin duyệt, 1: Đã duyệt, 2: Bị từ chối
+        public bool? TrangThai { get; set; } = true;     // true: Hoạt động, false: Bị khóa
+        public DateTime? NgayDangKy { get; set; } = DateTime.Now;
+        public DateTime? NgayDuyet { get; set; }
 
         public virtual ICollection<Mathang> Mathangs { get; set; } = new List<Mathang>();
     }

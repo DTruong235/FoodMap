@@ -1,0 +1,92 @@
+﻿@model IEnumerable<FoodMap.Models.Mathang>
+
+@{
+    ViewData["Title"] = "Danh sách sản phẩm của " + ViewBag.TenVendor;
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container-fluid py-3">
+    <!-- Header & Nút quay lại -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="fw-bold text-primary mb-1">
+                <i class="bi bi-shop me-2"></i>Sản phẩm gian hàng: <span class="text-dark">@ViewBag.TenVendor</span>
+            </h4>
+            <span class="text-muted small">Tổng số mặt hàng/tour: <strong>@Model.Count()</strong></span>
+        </div>
+        <a asp-action="Index" class="btn btn-outline-secondary rounded-pill btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Quay lại Trang quản lý
+        </a>
+    </div>
+
+    <!-- Bảng danh sách sản phẩm -->
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-3">Hình ảnh</th>
+                            <th>Tên món / Tour</th>
+                            <th>Chủ đề</th>
+                            <th>Giá gốc</th>
+                            <th>Giá bán</th>
+                            <th class="text-center">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Any())
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center py-5 text-muted">
+                                    <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                                    Vendor này chưa đăng tải sản phẩm hoặc gói tour nào.
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="ps-3">
+                                        @if (!string.IsNullOrEmpty(item.HinhAnh))
+                                        {
+                                            <img src="~/images/@item.HinhAnh" alt="@item.Ten" width="55" height="55" class="rounded object-fit-cover shadow-sm" />
+                                        }
+                                        else
+                                        {
+                                            <div class="bg-light rounded d-flex align-items-center justify-content-center text-muted" style="width: 55px; height: 55px;">
+                                                <i class="bi bi-image fs-4"></i>
+                                            </div>
+                                        }
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold text-dark d-block">@item.Ten</span>
+                                        <small class="text-muted">Mã MH: #@item.MaMh</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info text-dark">
+                                            @(item.Chude?.TenCd ?? "Chưa phân loại")
+                                        </span>
+                                    </td>
+                                    <td class="text-decoration-line-through text-muted">
+                                        @(item.GiaGoc.HasValue ? item.GiaGoc.Value.ToString("N0") + " đ" : "—")
+                                    </td>
+                                    <td class="text-danger fw-bold">
+                                        @(item.GiaBan.HasValue ? item.GiaBan.Value.ToString("N0") + " đ" : "Liên hệ")
+                                    </td>
+                                    <td class="text-center">
+                                        <a asp-controller="Home" asp-action="Details" asp-route-id="@item.MaMh" target="_blank" class="btn btn-sm btn-outline-info rounded-pill">
+                                            <i class="bi bi-eye me-1"></i> Xem chi tiết
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
